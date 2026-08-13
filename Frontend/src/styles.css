@@ -1,0 +1,103 @@
+:root {
+  --color-bg: #f3f1ea;
+  --color-surface: #ffffff;
+  --color-ink: #14162b;
+  --color-ink-soft: #5b5d74;
+  --color-line: #e3e0d5;
+
+  --color-send: #ff6b4a;
+  --color-send-ink: #7a2a16;
+  --color-send-soft: #ffe3da;
+
+  --color-receive: #2f5dff;
+  --color-receive-ink: #142b7a;
+  --color-receive-soft: #dde5ff;
+
+  --color-error: #c72c2c;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius-lg: 28px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-receive);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 32px 16px;
+}
+
+.phone {
+  width: 100%;
+  max-width: 400px;
+  min-height: 720px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 20px 60px -30px rgba(20, 22, 43, 0.35);
+  padding: 28px 24px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 460px) {
+  .app-shell {
+    padding: 0;
+  }
+  .phone {
+    min-height: 100vh;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

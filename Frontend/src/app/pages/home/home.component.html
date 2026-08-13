@@ -1,0 +1,28 @@
+<div class="home">
+  <p class="eyebrow">IKaody</p>
+
+  <div class="balance-card">
+    <p class="balance-label">Solde disponible</p>
+    <p class="balance-amount">{{ balance | number: '1.2-2' }}&nbsp;€</p>
+  </div>
+
+  <div class="actions">
+    <a class="action send" routerLink="/envoyer">
+      <span class="action-icon" aria-hidden="true">↗</span>
+      <span class="action-text">
+        <span class="action-title">Envoyer</span>
+        <span class="action-sub">Générer un QR à transmettre</span>
+      </span>
+    </a>
+
+    <a class="action receive" routerLink="/recevoir">
+      <span class="action-icon" aria-hidden="true">↙</span>
+      <span class="action-text">
+        <span class="action-title">Recevoir</span>
+        <span class="action-sub">Scanner un QR reçu</span>
+      </span>
+    </a>
+  </div>
+
+  <p class="hint">Aucune donnée bancaire réelle n'est utilisée — ceci est un prototype de parcours.</p>
+</div>

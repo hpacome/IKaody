@@ -1,0 +1,22 @@
+<div class="receive">
+  <a class="back" routerLink="/">←</a>
+  <h1 class="title">Recevoir de l'argent</h1>
+  <p class="subtitle" *ngIf="step === 'scan'">Pointez la caméra vers le QR code de l'expéditeur.</p>
+
+  <div class="scan-frame" [class.hidden]="step !== 'scan'">
+    <div id="qr-reader"></div>
+  </div>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <div class="success-view" *ngIf="step === 'success' && receivedTransfer">
+    <div class="check" aria-hidden="true">✓</div>
+    <p class="success-label">Vous avez reçu</p>
+    <p class="success-amount">{{ receivedTransfer.amount | number: '1.2-2' }}&nbsp;€</p>
+    <p class="success-sender">de {{ receivedTransfer.sender }}</p>
+    <p class="success-id">Référence {{ receivedTransfer.id }}</p>
+
+    <button class="primary-btn receive-btn" (click)="scanAnother()">Nouvelle réception</button>
+    <a class="secondary-btn" routerLink="/">Retour à l'accueil</a>
+  </div>
+</div>

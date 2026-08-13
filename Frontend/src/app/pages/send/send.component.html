@@ -1,0 +1,54 @@
+<div class="send" *ngIf="step === 'form'">
+  <a class="back" routerLink="/">←</a>
+  <h1 class="title">Envoyer de l'argent</h1>
+  <p class="subtitle">Le destinataire scannera un QR pour recevoir la somme.</p>
+
+  <label class="field-label" for="amount">Montant</label>
+  <div class="amount-field">
+    <input
+      id="amount"
+      type="number"
+      inputmode="decimal"
+      placeholder="0,00"
+      [(ngModel)]="amount"
+      name="amount"
+    />
+    <span class="currency">€</span>
+  </div>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <label class="field-label" for="sender">Votre nom (optionnel)</label>
+  <input id="sender" class="text-field" type="text" placeholder="Ex. Aïcha" [(ngModel)]="senderName" name="sender" />
+
+  <button class="primary-btn send-btn" (click)="generateQr()">Générer le QR code</button>
+</div>
+
+<div class="qr-view" *ngIf="step === 'qr' && transfer">
+  <p class="qr-label">Montant à transférer</p>
+  <p class="qr-amount">{{ transfer.amount | number: '1.2-2' }}&nbsp;€</p>
+
+  <div class="qr-frame">
+    <canvas #qrCanvas></canvas>
+  </div>
+
+  <p class="qr-id">Référence {{ transfer.id }}</p>
+  <p class="qr-hint">Présentez ce code à la personne qui doit recevoir la somme, ou partagez-le.</p>
+
+  <p class="feedback" *ngIf="actionFeedback">{{ actionFeedback }}</p>
+
+  <div class="qr-actions">
+    <button class="primary-btn send-btn" (click)="shareQr()">
+      Partager (WhatsApp, Messenger, SMS, email…)
+    </button>
+
+    <div class="icon-actions">
+      <button class="icon-btn" (click)="copyImage()">Copier l'image</button>
+      <button class="icon-btn" (click)="downloadImage()">Enregistrer l'image</button>
+    </div>
+  </div>
+
+  <div class="bottom-actions">
+    <button class="finish-btn" (click)="finishTransaction()">Terminer la transaction</button>
+    <button class="secondary-btn" (click)="reset()">Annuler la transaction</button>
+  </div>
+</div>
