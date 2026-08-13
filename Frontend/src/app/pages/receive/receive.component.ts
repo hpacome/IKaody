@@ -19,6 +19,7 @@ export class ReceiveComponent implements OnInit, OnDestroy {
   step: ReceiveStep = 'scan';
   errorMessage = '';
   receivedTransfer: Transfer | null = null;
+  isReadingFile = false;
 
   private scanner: Html5Qrcode | null = null;
 
@@ -55,10 +56,39 @@ export class ReceiveComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** Triggered when the user picks an image file containing a QR code. */
+  async onFileSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if (!file) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.isReadingFile = true;
+
+    try {
+      if (this.scanner) {
+        await this.scanner.stop().catch(() => undefined);
+      } else {
+        this.scanner = new Html5Qrcode(READER_ID);
+      }
+      const decodedText = await this.scanner.scanFile(file, false);
+      this.handleScan(decodedText);
+    } catch {
+      this.errorMessage = "Aucun QR code lisible n'a été trouvé dans cette image.";
+      this.startScanner();
+    } finally {
+      this.isReadingFile = false;
+      input.value = '';
+    }
+  }
+
   private handleScan(rawText: string): void {
     const transfer = this.transferService.decode(rawText);
     if (!transfer) {
       this.errorMessage = "Ce QR code n'est pas une transaction IKaody valide.";
+      this.startScanner();
       return;
     }
     this.errorMessage = '';

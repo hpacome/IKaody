@@ -38,6 +38,27 @@
   width: 100%;
 }
 
+.import-row {
+  display: flex;
+}
+
+.import-btn {
+  flex: 1;
+  text-align: center;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.import-btn.disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .error {
   color: var(--color-error);
   font-size: 13px;

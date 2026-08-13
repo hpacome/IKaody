@@ -7,6 +7,13 @@
     <div id="qr-reader"></div>
   </div>
 
+  <div class="import-row" *ngIf="step === 'scan'">
+    <label class="import-btn" [class.disabled]="isReadingFile">
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" [disabled]="isReadingFile" hidden />
+      {{ isReadingFile ? 'Lecture en cours…' : 'Importer une image de QR code' }}
+    </label>
+  </div>
+
   <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
 
   <div class="success-view" *ngIf="step === 'success' && receivedTransfer">
