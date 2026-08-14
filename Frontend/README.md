@@ -13,9 +13,15 @@ Puis ouvrez http://localhost:4200.
 
 ## Parcours implémenté
 
-- `/` — accueil avec solde et deux actions : Envoyer / Recevoir
-- `/envoyer` — saisie du montant, génération d'un QR code (librairie `qrcode`)
-- `/recevoir` — ouverture de la caméra et scan du QR (librairie `html5-qrcode`), puis écran de confirmation
+- `/` — accueil avec solde (recalculé à partir de l'historique), section Historique, et deux actions : Envoyer / Recevoir
+- `/envoyer` — saisie du montant, génération d'un QR code (librairie `qrcode`), partage / copie / enregistrement de l'image
+- `/recevoir` — scan caméra ou import d'une image de QR (librairie `html5-qrcode`), puis écran de confirmation
+
+## Historique des transactions
+
+Chaque envoi (génération d'un QR) et chaque réception (scan réussi) est enregistré dans `localStorage`, sous la clé `ikaody-history`. C'est propre à chaque navigateur/appareil — il n'y a pas de synchronisation entre appareils tant qu'il n'y a pas de backend. Le solde affiché à l'accueil est recalculé à partir de cet historique (solde de départ +/- transactions).
+
+Chaque transaction envoyée a un statut **« En attente »** tant qu'on ignore si le destinataire l'a scannée (ce prototype n'a pas de backend pour le confirmer) ; les réceptions, elles, sont toujours marquées comme terminées puisque l'argent est déjà crédité localement.
 
 ## Important — ceci est un prototype front-end uniquement
 

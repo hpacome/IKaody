@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import * as QRCode from 'qrcode';
 import { TransferService, Transfer } from '../../services/transfer.service';
+import { HistoryService } from '../../services/history.service';
 
 type SendStep = 'form' | 'qr';
 
@@ -28,7 +29,7 @@ export class SendComponent implements AfterViewChecked {
 
   private qrRendered = false;
 
-  constructor(private transferService: TransferService, private router: Router) {
+  constructor(private transferService: TransferService, private historyService: HistoryService, private router: Router) {
     this.canShareFiles = typeof navigator !== 'undefined' && !!(navigator as any).canShare;
   }
 
@@ -51,6 +52,13 @@ export class SendComponent implements AfterViewChecked {
     }
     this.errorMessage = '';
     this.transfer = this.transferService.createTransfer(this.amount, this.senderName);
+    this.historyService.addEntry({
+      id: this.transfer.id,
+      type: 'sent',
+      amount: this.transfer.amount,
+      date: this.transfer.createdAt,
+      status: 'pending'
+    });
     this.qrRendered = false;
     this.step = 'qr';
   }
