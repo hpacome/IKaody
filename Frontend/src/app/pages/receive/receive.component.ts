@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
 import { TransferService, Transfer } from '../../services/transfer.service';
+import { HistoryService } from '../../services/history.service';
 
 type ReceiveStep = 'scan' | 'success';
 
@@ -24,7 +25,7 @@ export class ReceiveComponent implements OnInit, OnDestroy {
 
   private scanner: Html5Qrcode | null = null;
 
-  constructor(private transferService: TransferService) {}
+  constructor(private transferService: TransferService, private historyService: HistoryService) {}
 
   ngOnInit(): void {
     this.startScanner();
@@ -124,6 +125,14 @@ export class ReceiveComponent implements OnInit, OnDestroy {
     }
     this.errorMessage = '';
     this.receivedTransfer = transfer;
+    this.historyService.addEntry({
+      id: transfer.id,
+      type: 'received',
+      amount: transfer.amount,
+      counterpart: transfer.sender,
+      date: Date.now(),
+      status: 'completed'
+    });
     this.step = 'success';
     this.stopScanner();
   }
