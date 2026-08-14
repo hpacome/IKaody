@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Html5Qrcode } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
 import { TransferService, Transfer } from '../../services/transfer.service';
 
 type ReceiveStep = 'scan' | 'success';
@@ -20,6 +20,7 @@ export class ReceiveComponent implements OnInit, OnDestroy {
   errorMessage = '';
   receivedTransfer: Transfer | null = null;
   isReadingFile = false;
+  cameraVisible = true;
 
   private scanner: Html5Qrcode | null = null;
 
@@ -34,6 +35,7 @@ export class ReceiveComponent implements OnInit, OnDestroy {
   }
 
   private startScanner(): void {
+    this.cameraVisible = true;
     this.scanner = new Html5Qrcode(READER_ID);
     this.scanner
       .start(
@@ -49,11 +51,33 @@ export class ReceiveComponent implements OnInit, OnDestroy {
       });
   }
 
-  private stopScanner(): void {
-    if (this.scanner) {
-      this.scanner.stop().catch(() => undefined);
-      this.scanner = null;
+  /** True only when the underlying scanner can actually accept a stop() call. */
+  private isScannerActive(): boolean {
+    if (!this.scanner) {
+      return false;
     }
+    try {
+      const state = this.scanner.getState();
+      return state === Html5QrcodeScannerState.SCANNING || state === Html5QrcodeScannerState.PAUSED;
+    } catch {
+      return false;
+    }
+  }
+
+  private async stopScannerAsync(): Promise<void> {
+    if (this.isScannerActive()) {
+      try {
+        await this.scanner!.stop();
+      } catch {
+        /* the scanner was already stopping/stopped — nothing to do */
+      }
+    }
+    this.scanner = null;
+  }
+
+  /** Fire-and-forget variant for places (like ngOnDestroy) that can't be async. */
+  private stopScanner(): void {
+    this.stopScannerAsync().catch(() => undefined);
   }
 
   /** Triggered when the user picks an image file containing a QR code. */
@@ -66,29 +90,36 @@ export class ReceiveComponent implements OnInit, OnDestroy {
 
     this.errorMessage = '';
     this.isReadingFile = true;
+    this.cameraVisible = false;
+
+    await this.stopScannerAsync();
+    this.scanner = new Html5Qrcode(READER_ID);
 
     try {
-      if (this.scanner) {
-        await this.scanner.stop().catch(() => undefined);
-      } else {
-        this.scanner = new Html5Qrcode(READER_ID);
-      }
       const decodedText = await this.scanner.scanFile(file, false);
       this.handleScan(decodedText);
     } catch {
       this.errorMessage = "Aucun QR code lisible n'a été trouvé dans cette image.";
-      this.startScanner();
+      // La caméra reste masquée : on ne relance pas le scan automatiquement ici.
     } finally {
       this.isReadingFile = false;
       input.value = '';
     }
   }
 
+  /** Lets the user go back to live camera scanning after using file import. */
+  useCameraInstead(): void {
+    this.errorMessage = '';
+    this.startScanner();
+  }
+
   private handleScan(rawText: string): void {
     const transfer = this.transferService.decode(rawText);
     if (!transfer) {
       this.errorMessage = "Ce QR code n'est pas une transaction IKaody valide.";
-      this.startScanner();
+      if (this.cameraVisible) {
+        this.startScanner();
+      }
       return;
     }
     this.errorMessage = '';

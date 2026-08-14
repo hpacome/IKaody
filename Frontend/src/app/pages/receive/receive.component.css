@@ -59,6 +59,16 @@
   cursor: default;
 }
 
+.camera-back-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-receive-ink);
+  font-size: 13px;
+  text-decoration: underline;
+  padding: 4px 0;
+  align-self: center;
+}
+
 .error {
   color: var(--color-error);
   font-size: 13px;

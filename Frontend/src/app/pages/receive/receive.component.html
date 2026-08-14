@@ -1,9 +1,9 @@
 <div class="receive">
   <a class="back" routerLink="/">←</a>
   <h1 class="title">Recevoir de l'argent</h1>
-  <p class="subtitle" *ngIf="step === 'scan'">Pointez la caméra vers le QR code de l'expéditeur.</p>
+  <p class="subtitle" *ngIf="step === 'scan' && cameraVisible">Pointez la caméra vers le QR code de l'expéditeur.</p>
 
-  <div class="scan-frame" [class.hidden]="step !== 'scan'">
+  <div class="scan-frame" [class.hidden]="step !== 'scan' || !cameraVisible">
     <div id="qr-reader"></div>
   </div>
 
@@ -13,6 +13,10 @@
       {{ isReadingFile ? 'Lecture en cours…' : 'Importer une image de QR code' }}
     </label>
   </div>
+
+  <button class="camera-back-btn" *ngIf="step === 'scan' && !cameraVisible && !isReadingFile" (click)="useCameraInstead()">
+    Utiliser la caméra à la place
+  </button>
 
   <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
 
