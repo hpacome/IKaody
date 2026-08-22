@@ -1,0 +1,76 @@
+<div class="auth">
+  <p class="eyebrow">IKaody</p>
+  <h1 class="title">{{ mode === 'login' ? 'Connexion' : 'Créer un compte' }}</h1>
+  <p class="subtitle">
+    {{ mode === 'login' ? 'Accédez à votre espace IKaody.' : 'Quelques informations pour démarrer.' }}
+  </p>
+
+  <form class="form" (ngSubmit)="submit()">
+    <ng-container *ngIf="mode === 'signup'">
+      <label class="field-label" for="name">Nom complet</label>
+      <input
+        id="name"
+        class="text-field"
+        type="text"
+        placeholder="Ex. Aïcha Rakoto"
+        autocomplete="name"
+        [(ngModel)]="name"
+        name="name"
+      />
+    </ng-container>
+
+    <label class="field-label" for="email">Email</label>
+    <input
+      id="email"
+      class="text-field"
+      type="email"
+      placeholder="vous@exemple.com"
+      autocomplete="email"
+      [(ngModel)]="email"
+      name="email"
+    />
+
+    <label class="field-label" for="password">Mot de passe</label>
+    <input
+      id="password"
+      class="text-field"
+      type="password"
+      placeholder="••••••••"
+      [attr.autocomplete]="mode === 'login' ? 'current-password' : 'new-password'"
+      [(ngModel)]="password"
+      name="password"
+    />
+
+    <ng-container *ngIf="mode === 'signup'">
+      <label class="field-label" for="confirmPassword">Confirmer le mot de passe</label>
+      <input
+        id="confirmPassword"
+        class="text-field"
+        type="password"
+        placeholder="••••••••"
+        autocomplete="new-password"
+        [(ngModel)]="confirmPassword"
+        name="confirmPassword"
+      />
+    </ng-container>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <button type="submit" class="primary-btn">
+      {{ mode === 'login' ? 'Se connecter' : "S'inscrire" }}
+    </button>
+  </form>
+
+  <p class="switch">
+    <ng-container *ngIf="mode === 'login'; else toLogin">
+      Pas encore de compte ?
+      <button type="button" class="link-btn" (click)="switchMode('signup')">Créer un compte</button>
+    </ng-container>
+    <ng-template #toLogin>
+      Déjà un compte ?
+      <button type="button" class="link-btn" (click)="switchMode('login')">Se connecter</button>
+    </ng-template>
+  </p>
+
+  <p class="hint">Aucune donnée réelle n'est utilisée — ceci est un prototype, la session reste sur cet appareil.</p>
+</div>

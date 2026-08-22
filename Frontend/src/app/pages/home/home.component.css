@@ -5,12 +5,28 @@
   gap: 28px;
 }
 
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-ink-soft);
+}
+
+.logout-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-ink-soft);
+  font-size: 12px;
+  text-decoration: underline;
+  flex-shrink: 0;
 }
 
 .balance-card {

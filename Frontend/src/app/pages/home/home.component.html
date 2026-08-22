@@ -1,5 +1,8 @@
 <div class="home">
-  <p class="eyebrow">IKaody</p>
+  <div class="top-bar">
+    <p class="eyebrow">IKaody<ng-container *ngIf="session"> — {{ session.name }}</ng-container></p>
+    <button class="logout-btn" (click)="logout()">Déconnexion</button>
+  </div>
 
   <div class="balance-card">
     <p class="balance-label">Solde disponible</p>

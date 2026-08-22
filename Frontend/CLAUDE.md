@@ -21,17 +21,19 @@ There is no lint config and no `ng lint` script configured in this repo — don'
 
 Angular 17, standalone components (no NgModules), routed via `provideRouter` in `src/app/app.config.ts`. Routes are defined in `src/app/app.routes.ts`:
 
+- `/connexion` → `AuthComponent` — simulated login/signup toggle, the only route not behind `authGuard`
 - `/` → `HomeComponent` — balance (derived from history) + recent transactions + links to send/receive
 - `/envoyer` → `SendComponent` — amount entry → QR generation
 - `/recevoir` → `ReceiveComponent` — camera scan or image import → confirmation
 - `/historique` → `HistoryComponent` — full transaction list
 
-Each page lives under `src/app/pages/<name>/` as a self-contained triplet (`.ts` + `.html` + `.css`).
+Each page lives under `src/app/pages/<name>/` as a self-contained triplet (`.ts` + `.html` + `.css`). All routes except `/connexion` carry `canActivate: [authGuard]` (`src/app/guards/auth.guard.ts`), which redirects to `/connexion` when there's no session.
 
 ### Core data flow
 
-Two root-provided services drive the whole app, and both are stateless with respect to a backend — everything is local:
+Three root-provided services drive the whole app, and all are stateless with respect to a backend — everything is local:
 
+- **`AuthService`** (`src/app/services/auth.service.ts`) simulates accounts and sessions entirely in `localStorage` (`ikaody-users`, `ikaody-session`), including storing passwords in plaintext — there is no backend, so this is a prototype convenience, not a real auth system. `register()`/`login()` return `{ success, error? }`; `getSession()`/`isAuthenticated()` read the current session.
 - **`TransferService`** (`src/app/services/transfer.service.ts`) creates/encodes/decodes `Transfer` objects. A transfer is JSON-encoded directly into the QR payload (`{ type: 'virevolt-transfer', id, amount, sender, createdAt }`) — the QR *is* the transaction, there's no server round-trip. `decode()` validates the shape before trusting scanned input.
 - **`HistoryService`** (`src/app/services/history.service.ts`) persists a `HistoryEntry[]` to `localStorage` under the key `ikaody-history` (capped at 50 entries, most-recent-first). Sent transfers are recorded with status `'pending'` (no backend to confirm the recipient scanned it); received transfers are always `'completed'`. `HomeComponent` recomputes the displayed balance from this history on top of a hardcoded `startingBalance`, rather than storing a balance directly — treat history as the source of truth, not a cache.
 

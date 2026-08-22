@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HistoryEntry, HistoryService } from '../../services/history.service';
+import { AuthService } from '../../services/auth.service';
 
 const RECENT_COUNT = 4;
 
@@ -18,11 +19,21 @@ export class HomeComponent implements OnInit {
   balance = this.startingBalance;
   recentHistory: HistoryEntry[] = [];
   totalHistoryCount = 0;
+  session = this.authService.getSession();
 
-  constructor(private historyService: HistoryService) {}
+  constructor(
+    private historyService: HistoryService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadHistory();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/connexion');
   }
 
   clearHistory(): void {
