@@ -51,6 +51,32 @@
   margin: -2px 0 0;
 }
 
+.info {
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  margin: -2px 0 0;
+}
+
+.demo-code {
+  font-size: 13px;
+  color: var(--color-receive-ink);
+  background: var(--color-receive-soft);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.demo-code strong {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+
+.code-field {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
 .primary-btn {
   border: none;
   border-radius: var(--radius-md);

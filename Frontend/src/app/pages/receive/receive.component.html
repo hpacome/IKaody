@@ -1,33 +1,43 @@
 <div class="receive">
   <a class="back" routerLink="/">←</a>
   <h1 class="title">Recevoir de l'argent</h1>
-  <p class="subtitle" *ngIf="step === 'scan' && cameraVisible">Pointez la caméra vers le QR code de l'expéditeur.</p>
+  @if (step === 'scan' && cameraVisible) {
+    <p class="subtitle">Pointez la caméra vers le QR code de l'expéditeur.</p>
+  }
 
   <div class="scan-frame" [class.hidden]="step !== 'scan' || !cameraVisible">
     <div id="qr-reader"></div>
   </div>
 
-  <div class="import-row" *ngIf="step === 'scan'">
-    <label class="import-btn" [class.disabled]="isReadingFile">
-      <input type="file" accept="image/*" (change)="onFileSelected($event)" [disabled]="isReadingFile" hidden />
-      {{ isReadingFile ? 'Lecture en cours…' : 'Importer une image de QR code' }}
-    </label>
-  </div>
+  @if (step === 'scan') {
+    <div class="import-row">
+      <label class="import-btn" [class.disabled]="isReadingFile">
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" [disabled]="isReadingFile" hidden />
+        {{ isReadingFile ? 'Lecture en cours…' : 'Importer une image de QR code' }}
+      </label>
+    </div>
+  }
 
-  <button class="camera-back-btn" *ngIf="step === 'scan' && !cameraVisible && !isReadingFile" (click)="useCameraInstead()">
-    Utiliser la caméra à la place
-  </button>
+  @if (step === 'scan' && !cameraVisible && !isReadingFile) {
+    <button class="camera-back-btn" (click)="useCameraInstead()">
+      Utiliser la caméra à la place
+    </button>
+  }
 
-  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
 
-  <div class="success-view" *ngIf="step === 'success' && receivedTransfer">
-    <div class="check" aria-hidden="true">✓</div>
-    <p class="success-label">Vous avez reçu</p>
-    <p class="success-amount">{{ receivedTransfer.amount | number: '1.2-2' }}&nbsp;€</p>
-    <p class="success-sender">de {{ receivedTransfer.sender }}</p>
-    <p class="success-id">Référence {{ receivedTransfer.id }}</p>
+  @if (step === 'success' && receivedTransfer) {
+    <div class="success-view">
+      <div class="check" aria-hidden="true">✓</div>
+      <p class="success-label">Vous avez reçu</p>
+      <p class="success-amount">{{ receivedTransfer.amount | number: '1.2-2' }}&nbsp;€</p>
+      <p class="success-sender">de {{ receivedTransfer.sender }}</p>
+      <p class="success-id">Référence {{ receivedTransfer.id }}</p>
 
-    <button class="primary-btn receive-btn" (click)="scanAnother()">Nouvelle réception</button>
-    <a class="secondary-btn" routerLink="/">Retour à l'accueil</a>
-  </div>
+      <button class="primary-btn receive-btn" (click)="scanAnother()">Nouvelle réception</button>
+      <a class="secondary-btn" routerLink="/">Retour à l'accueil</a>
+    </div>
+  }
 </div>

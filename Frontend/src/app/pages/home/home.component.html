@@ -1,6 +1,11 @@
 <div class="home">
   <div class="top-bar">
-    <p class="eyebrow">IKaody<ng-container *ngIf="session"> — {{ session.name }}</ng-container></p>
+    <p class="eyebrow">
+      IKaody
+      @if (session) {
+        — {{ session.name }}
+      }
+    </p>
     <button class="logout-btn" (click)="logout()">Déconnexion</button>
   </div>
 
@@ -32,34 +37,57 @@
   <div class="history">
     <div class="history-header">
       <h2 class="history-title">Historique</h2>
-      <button class="clear-btn" *ngIf="recentHistory.length" (click)="clearHistory()">Effacer</button>
+      @if (recentHistory.length) {
+        <button class="clear-btn" (click)="clearHistory()">Effacer</button>
+      }
     </div>
 
-    <p class="empty-history" *ngIf="!recentHistory.length">Aucune transaction pour le moment.</p>
+    @if (!recentHistory.length) {
+      <p class="empty-history">Aucune transaction pour le moment.</p>
+    }
 
-    <ul class="history-list" *ngIf="recentHistory.length">
-      <li class="history-item" *ngFor="let entry of recentHistory">
-        <span class="history-icon" [class.sent]="entry.type === 'sent'" [class.received]="entry.type === 'received'" aria-hidden="true">
-          {{ entry.type === 'sent' ? '↗' : '↙' }}
-        </span>
-        <span class="history-info">
-          <span class="history-label">
-            {{ entry.type === 'sent' ? 'Envoyé' : 'Reçu' }}
-            <ng-container *ngIf="entry.counterpart">{{ entry.type === 'sent' ? ' à ' : ' de ' }}{{ entry.counterpart }}</ng-container>
-          </span>
-          <span class="history-date">
-            {{ formatDate(entry.date) }}
-            <span class="status-badge pending" *ngIf="entry.status === 'pending'">En attente</span>
-          </span>
-        </span>
-        <span class="history-amount" [class.sent]="entry.type === 'sent'" [class.received]="entry.type === 'received'">
-          {{ entry.type === 'sent' ? '−' : '+' }}{{ entry.amount | number: '1.2-2' }}&nbsp;€
-        </span>
-      </li>
-    </ul>
+    @if (recentHistory.length) {
+      <ul class="history-list">
+        @for (entry of recentHistory; track entry.id) {
+          <li class="history-item">
+            <span
+              class="history-icon"
+              [class.sent]="entry.type === 'sent'"
+              [class.received]="entry.type === 'received'"
+              aria-hidden="true"
+            >
+              {{ entry.type === 'sent' ? '↗' : '↙' }}
+            </span>
+            <span class="history-info">
+              <span class="history-label">
+                {{ entry.type === 'sent' ? 'Envoyé' : 'Reçu' }}
+                @if (entry.counterpart) {
+                  {{ entry.type === 'sent' ? ' à ' : ' de ' }}{{ entry.counterpart }}
+                }
+              </span>
+              <span class="history-date">
+                {{ formatDate(entry.date) }}
+                @if (entry.status === 'pending') {
+                  <span class="status-badge pending">En attente</span>
+                }
+              </span>
+            </span>
+            <span
+              class="history-amount"
+              [class.sent]="entry.type === 'sent'"
+              [class.received]="entry.type === 'received'"
+            >
+              {{ entry.type === 'sent' ? '−' : '+' }}{{ entry.amount | number: '1.2-2' }}&nbsp;€
+            </span>
+          </li>
+        }
+      </ul>
+    }
 
-    <a class="see-all-link" *ngIf="totalHistoryCount > recentHistory.length" routerLink="/historique">
-      Voir tout l'historique ({{ totalHistoryCount }})
-    </a>
+    @if (totalHistoryCount > recentHistory.length) {
+      <a class="see-all-link" routerLink="/historique">
+        Voir tout l'historique ({{ totalHistoryCount }})
+      </a>
+    }
   </div>
 </div>

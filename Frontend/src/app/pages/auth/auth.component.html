@@ -1,76 +1,117 @@
 <div class="auth">
   <p class="eyebrow">IKaody</p>
-  <h1 class="title">{{ mode === 'login' ? 'Connexion' : 'Créer un compte' }}</h1>
-  <p class="subtitle">
-    {{ mode === 'login' ? 'Accédez à votre espace IKaody.' : 'Quelques informations pour démarrer.' }}
-  </p>
 
-  <form class="form" (ngSubmit)="submit()">
-    <ng-container *ngIf="mode === 'signup'">
-      <label class="field-label" for="name">Nom complet</label>
+  @if (mode === 'verify') {
+    <h1 class="title">Vérifiez votre email</h1>
+    <p class="subtitle">Entrez le code envoyé à {{ pendingEmail }}.</p>
+
+    @if (simulatedCode) {
+      <p class="demo-code">
+        Prototype — aucun email n'est réellement envoyé. Code de démonstration : <strong>{{ simulatedCode }}</strong>
+      </p>
+    }
+
+    <form class="form" (ngSubmit)="submit()">
+      <label class="field-label" for="code">Code de vérification</label>
       <input
-        id="name"
-        class="text-field"
+        id="code"
+        class="text-field code-field"
         type="text"
-        placeholder="Ex. Aïcha Rakoto"
-        autocomplete="name"
-        [(ngModel)]="name"
-        name="name"
+        inputmode="numeric"
+        placeholder="123456"
+        maxlength="6"
+        [(ngModel)]="verificationCode"
+        name="code"
       />
-    </ng-container>
 
-    <label class="field-label" for="email">Email</label>
-    <input
-      id="email"
-      class="text-field"
-      type="email"
-      placeholder="vous@exemple.com"
-      autocomplete="email"
-      [(ngModel)]="email"
-      name="email"
-    />
+      @if (infoMessage) {
+        <p class="info">{{ infoMessage }}</p>
+      }
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
 
-    <label class="field-label" for="password">Mot de passe</label>
-    <input
-      id="password"
-      class="text-field"
-      type="password"
-      placeholder="••••••••"
-      [attr.autocomplete]="mode === 'login' ? 'current-password' : 'new-password'"
-      [(ngModel)]="password"
-      name="password"
-    />
+      <button type="submit" class="primary-btn">Vérifier</button>
+    </form>
 
-    <ng-container *ngIf="mode === 'signup'">
-      <label class="field-label" for="confirmPassword">Confirmer le mot de passe</label>
+    <p class="switch">
+      Vous n'avez rien reçu ?
+      <button type="button" class="link-btn" (click)="resendCode()">Renvoyer le code</button>
+    </p>
+  } @else {
+    <h1 class="title">{{ mode === 'login' ? 'Connexion' : 'Créer un compte' }}</h1>
+    <p class="subtitle">
+      {{ mode === 'login' ? 'Accédez à votre espace IKaody.' : 'Quelques informations pour démarrer.' }}
+    </p>
+
+    <form class="form" (ngSubmit)="submit()">
+      @if (mode === 'signup') {
+        <label class="field-label" for="name">Nom complet</label>
+        <input
+          id="name"
+          class="text-field"
+          type="text"
+          placeholder="Ex. Aïcha Rakoto"
+          autocomplete="name"
+          [(ngModel)]="name"
+          name="name"
+        />
+      }
+
+      <label class="field-label" for="email">Email</label>
       <input
-        id="confirmPassword"
+        id="email"
+        class="text-field"
+        type="email"
+        placeholder="vous@exemple.com"
+        autocomplete="email"
+        [(ngModel)]="email"
+        name="email"
+      />
+
+      <label class="field-label" for="password">Mot de passe</label>
+      <input
+        id="password"
         class="text-field"
         type="password"
         placeholder="••••••••"
-        autocomplete="new-password"
-        [(ngModel)]="confirmPassword"
-        name="confirmPassword"
+        [attr.autocomplete]="mode === 'login' ? 'current-password' : 'new-password'"
+        [(ngModel)]="password"
+        name="password"
       />
-    </ng-container>
 
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      @if (mode === 'signup') {
+        <label class="field-label" for="confirmPassword">Confirmer le mot de passe</label>
+        <input
+          id="confirmPassword"
+          class="text-field"
+          type="password"
+          placeholder="••••••••"
+          autocomplete="new-password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+        />
+      }
 
-    <button type="submit" class="primary-btn">
-      {{ mode === 'login' ? 'Se connecter' : "S'inscrire" }}
-    </button>
-  </form>
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
 
-  <p class="switch">
-    <ng-container *ngIf="mode === 'login'; else toLogin">
-      Pas encore de compte ?
-      <button type="button" class="link-btn" (click)="switchMode('signup')">Créer un compte</button>
-    </ng-container>
-    <ng-template #toLogin>
-      Déjà un compte ?
-      <button type="button" class="link-btn" (click)="switchMode('login')">Se connecter</button>
-    </ng-template>
-  </p>
+      <button type="submit" class="primary-btn">
+        {{ mode === 'login' ? 'Se connecter' : "S'inscrire" }}
+      </button>
+    </form>
+
+    <p class="switch">
+      @if (mode === 'login') {
+        Pas encore de compte ?
+        <button type="button" class="link-btn" (click)="switchMode('signup')">Créer un compte</button>
+      } @else {
+        Déjà un compte ?
+        <button type="button" class="link-btn" (click)="switchMode('login')">Se connecter</button>
+      }
+    </p>
+  }
 
   <p class="hint">Aucune donnée réelle n'est utilisée — ceci est un prototype, la session reste sur cet appareil.</p>
 </div>

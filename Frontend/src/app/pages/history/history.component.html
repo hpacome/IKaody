@@ -2,29 +2,50 @@
   <div class="page-header">
     <a class="back" routerLink="/">←</a>
     <h1 class="title">Historique complet</h1>
-    <button class="clear-btn" *ngIf="history.length" (click)="clearHistory()">Effacer</button>
+    @if (history.length) {
+      <button class="clear-btn" (click)="clearHistory()">Effacer</button>
+    }
   </div>
 
-  <p class="empty-history" *ngIf="!history.length">Aucune transaction pour le moment.</p>
+  @if (!history.length) {
+    <p class="empty-history">Aucune transaction pour le moment.</p>
+  }
 
-  <ul class="history-list" *ngIf="history.length">
-    <li class="history-item" *ngFor="let entry of history">
-      <span class="history-icon" [class.sent]="entry.type === 'sent'" [class.received]="entry.type === 'received'" aria-hidden="true">
-        {{ entry.type === 'sent' ? '↗' : '↙' }}
-      </span>
-      <span class="history-info">
-        <span class="history-label">
-          {{ entry.type === 'sent' ? 'Envoyé' : 'Reçu' }}
-          <ng-container *ngIf="entry.counterpart">{{ entry.type === 'sent' ? ' à ' : ' de ' }}{{ entry.counterpart }}</ng-container>
-        </span>
-        <span class="history-date">
-          {{ formatDate(entry.date) }} · Réf. {{ entry.id }}
-          <span class="status-badge pending" *ngIf="entry.status === 'pending'">En attente</span>
-        </span>
-      </span>
-      <span class="history-amount" [class.sent]="entry.type === 'sent'" [class.received]="entry.type === 'received'">
-        {{ entry.type === 'sent' ? '−' : '+' }}{{ entry.amount | number: '1.2-2' }}&nbsp;€
-      </span>
-    </li>
-  </ul>
+  @if (history.length) {
+    <ul class="history-list">
+      @for (entry of history; track entry.id) {
+        <li class="history-item">
+          <span
+            class="history-icon"
+            [class.sent]="entry.type === 'sent'"
+            [class.received]="entry.type === 'received'"
+            aria-hidden="true"
+          >
+            {{ entry.type === 'sent' ? '↗' : '↙' }}
+          </span>
+          <span class="history-info">
+            <span class="history-label">
+              {{ entry.type === 'sent' ? 'Envoyé' : 'Reçu' }}
+              @if (entry.counterpart) {
+                {{ entry.type === 'sent' ? ' à ' : ' de ' }}{{ entry.counterpart }}
+              }
+            </span>
+            <span class="history-date">
+              {{ formatDate(entry.date) }} · Réf. {{ entry.id }}
+              @if (entry.status === 'pending') {
+                <span class="status-badge pending">En attente</span>
+              }
+            </span>
+          </span>
+          <span
+            class="history-amount"
+            [class.sent]="entry.type === 'sent'"
+            [class.received]="entry.type === 'received'"
+          >
+            {{ entry.type === 'sent' ? '−' : '+' }}{{ entry.amount | number: '1.2-2' }}&nbsp;€
+          </span>
+        </li>
+      }
+    </ul>
+  }
 </div>
